@@ -1,0 +1,17 @@
+# Python 環境與快取
+.conda/
+.venv/
+venv/
+env/
+__pycache__/
+*.py[cod]
+
+# Arduino 編譯檔
+*.elf
+*.hex
+*.bin
+build/
+
+# 作業系統產生的隱藏檔
+.DS_Store
+Thumbs.db
