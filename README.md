@@ -8,8 +8,6 @@ This project demonstrates a robust system architecture for Human-Robot Interacti
 
 ## 🛠️ System Requirements 
 
-To ensure high reproducibility, please strictly follow the version requirements below:
-
 ### Software 
 * **Python:** `3.11.9` (Strictly required)
 * **Arduino IDE:** Version 2.3.6
