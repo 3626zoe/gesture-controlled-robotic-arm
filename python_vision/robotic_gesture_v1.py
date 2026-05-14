@@ -29,18 +29,21 @@ def main():
 
     # 開啟攝影機
     cap = cv2.VideoCapture(0)
-    
+    cv2.namedWindow('Gesture Control', cv2.WINDOW_NORMAL)
+    # 預設開啟時的寬高 1024x768
+    cv2.resizeWindow('Gesture Control', 1024, 768)
+
     # 連接 Arduino
     ser = reconnect_serial(COM_PORT, BAUD_RATES)
 
-    # === 機器手臂當前角度 (記憶變數) ===
+    # === 機器手臂當前角度 ===
     curr_base = 90      # 底座 (左右)
     curr_shoulder = 90  # 大臂 (上下)
     curr_elbow = 90     # 小臂 (先固定，保持穩定)
     curr_claw = 30      # 夾爪
 
     print("---------------------------------------")
-    print("系統啟動：(Joystick Mode)")
+    print("系統啟動：")
     print("👉 手放中間 = 停止")
     print("👉 手移出綠框 = 手臂開始移動")
     print("---------------------------------------")
@@ -61,7 +64,7 @@ def main():
         # 2. 偵測手勢
         results = hands.process(rgb)
 
-        # 3. 畫出「搖桿中心區」 (綠色框框)
+        # 3. 畫出「中心區」 (綠色框框)
         # 設定畫面寬度的 30% ~ 70% 為靜止區
         cv2.rectangle(frame, (int(w*0.3), int(h*0.3)), (int(w*0.7), int(h*0.7)), (0, 255, 0), 2)
         cv2.putText(frame, "STOP ZONE", (int(w*0.3), int(h*0.3)-10), cv2.FONT_HERSHEY_SIMPLEX, 0.7, (0,255,0), 2)
@@ -72,12 +75,12 @@ def main():
             hand_landmarks = results.multi_hand_landmarks[0]
             mp_drawing.draw_landmarks(frame, hand_landmarks, mp_hands.HAND_CONNECTIONS)
 
-            # 取得手腕座標 (當作搖桿的中心點)
+            # 取得手腕座標 (中心點)
             wrist = hand_landmarks.landmark[0]
             cx, cy = wrist.x, wrist.y # 範圍是 0.0 ~ 1.0
 
             # ==========================================
-            # 搖桿控制邏輯 
+            # 控制邏輯 
             # ==========================================
 
             # --- 1. 左右控制 (Base 馬達) ---
@@ -100,7 +103,7 @@ def main():
             # 計算拇指(4)與食指(8)指尖距離
             thumb = hand_landmarks.landmark[4]
             index = hand_landmarks.landmark[8]
-            # 使用畢氏定理計算距離
+            # 畢氏定理計算距離
             dist = math.sqrt((thumb.x - index.x)**2 + (thumb.y - index.y)**2)
             
             if dist < 0.05: # 距離很近 -> 閉合
@@ -114,7 +117,6 @@ def main():
             # ==========================================
             # ⚠️ 安全範圍限制 
             # ==========================================
-            # 絕對不能超過 Arduino 設定的範圍，不然馬達會卡住
             curr_base = max(0, min(180, curr_base))
             curr_shoulder = max(30, min(150, curr_shoulder))
             curr_elbow = max(30, min(150, curr_elbow))
@@ -138,13 +140,13 @@ def main():
             last_send_time = time.time()
 
         # 顯示畫面
-        cv2.imshow('Joystick Control', frame)
+        cv2.imshow('Gesture Control', frame)
         
         # 按 ESC 離開
         if cv2.waitKey(1) & 0xFF == 27:
             break
 
-    # 結束釋放資源
+    # 結束
     cap.release()
     cv2.destroyAllWindows()
     if ser:
