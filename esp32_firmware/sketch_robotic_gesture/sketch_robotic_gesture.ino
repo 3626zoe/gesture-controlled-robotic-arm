@@ -31,10 +31,10 @@ void loop() {
         if (sscanf(data.c_str(), "%d,%d,%d,%d", &m1, &m2, &m3, &m4) == 4) {
             
             // --- Safe range limits ---
-            m1 = constrain(m1, 0, 180);   // 底座
-            m2 = constrain(m2, 30, 150);  // 大臂
-            m3 = constrain(m3, 30, 150);  // 小臂
-            m4 = constrain(m4, 10, 100);  // 夾爪
+            m1 = constrain(m1, 0, 180);   // Base
+            m2 = constrain(m2, 30, 150);  // Shoulder
+            m3 = constrain(m3, 30, 150);  // Elbow
+            m4 = constrain(m4, 10, 100);  // Claw
 
             // --- Execute movement ---
             s_base.write(m1);
