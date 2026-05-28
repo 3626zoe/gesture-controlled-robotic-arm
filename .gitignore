@@ -1,4 +1,4 @@
-# Python 環境與快取
+# Python environment and cache
 .conda/
 .venv/
 venv/
@@ -6,12 +6,13 @@ env/
 __pycache__/
 *.py[cod]
 
-# Arduino 編譯檔
+# Arduino compiled files
 *.elf
 *.hex
 *.bin
 build/
 
-# 作業系統產生的隱藏檔
+# OS hidden files
 .DS_Store
 Thumbs.db
+.vscode/
